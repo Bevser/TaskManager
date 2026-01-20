@@ -69,6 +69,7 @@ QHBoxLayout* TaskManager::createControlPanel()
         "    border: 2px solid #4CAF50;"
         "}"
         );
+    connect(m_taskInput, &QLineEdit::returnPressed, this, &TaskManager::addTask);
     controlLayout->addWidget(m_taskInput, 3);
 
     // Кнопка добавления

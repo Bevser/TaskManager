@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-qt_add_executable(DrW
+qt_add_executable(DrW WIN32
     MANUAL_FINALIZATION
     main.cpp
     task.h task.cpp
