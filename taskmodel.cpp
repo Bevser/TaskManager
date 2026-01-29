@@ -76,15 +76,6 @@ void TaskModel::removeTask(int row)
     delete task;
 }
 
-void TaskModel::removeSelectedTasks()
-{
-    for (int i = m_tasks.count() - 1; i >= 0; --i)
-    {
-        if (m_tasks.at(i)->isSelected())
-            removeTask(i);
-    }
-}
-
 Task* TaskModel::getTask(int row) const
 {
     if (row < 0 || row >= m_tasks.count())

@@ -20,13 +20,12 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     const QDateTime date = index.data(TaskModel::DateRole).toDateTime();
     const int progress = index.data(TaskModel::ProgressRole).toInt();
     const bool running = index.data(TaskModel::RunningRole).toBool();
-    Task *task = index.data(TaskModel::TaskPtrRole).value<Task*>();
 
     const QRect itemRect = option.rect.adjusted(ITEM_MARGIN, ITEM_VERTICAL_MARGIN,
                                                 -ITEM_MARGIN, -ITEM_VERTICAL_MARGIN);
 
     // Отрисовка компонентов
-    const bool isSelected = task && task->isSelected();
+    const bool isSelected = option.state & QStyle::State_Selected;
     const bool isHovered = option.state & QStyle::State_MouseOver;
 
     drawBackground(painter, itemRect, isSelected, isHovered);
@@ -66,15 +65,7 @@ bool TaskDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
             return true;
         }
 
-        // Клик по строке - выделение
-        auto *task = index.data(TaskModel::TaskPtrRole).value<Task*>();
-        if (task)
-        {
-            task->setSelected(!task->isSelected());
-            // Принудительное обновление отображения
-            model->dataChanged(index, index);
-        }
-        return true;
+        return false;
     }
 
     return QStyledItemDelegate::editorEvent(event, model, option, index);

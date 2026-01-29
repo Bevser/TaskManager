@@ -7,7 +7,6 @@ Task::Task(const QString &name, QObject *parent)
     , m_date(QDateTime::currentDateTime())
     , m_progress(0)
     , m_running(false)
-    , m_isSelected(false)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &Task::updateProgress);

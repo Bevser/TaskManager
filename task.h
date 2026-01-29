@@ -65,18 +65,6 @@ public:
     bool isRunning() const { return m_running; }
 
     /**
-     * @brief Проверить, выбрана ли задача в UI
-     * @return true если задача выбрана, false в противном случае
-     */
-    bool isSelected() const { return m_isSelected; }
-
-    /**
-     * @brief Установить состояние выбора задачи
-     * @param sel true для выбора, false для снятия выбора
-     */
-    void setSelected(bool sel) { m_isSelected = sel; }
-
-    /**
      * @brief Запустить выполнение задачи
      *
      * Запускает таймер с рандомным интервалом для автоматического
@@ -133,7 +121,6 @@ private:
     QDateTime m_date;           ///< Дата и время создания
     int m_progress;             ///< Текущий прогресс [0, 100]
     bool m_running;             ///< Флаг выполнения
-    bool m_isSelected;          ///< Флаг выбора в UI
     QTimer *m_timer{nullptr};   ///< Таймер для обновления прогресса
 };
 

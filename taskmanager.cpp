@@ -174,7 +174,7 @@ void TaskManager::setupTaskList()
     m_listView = new QListView(this);
     m_listView->setModel(m_proxyModel);
     m_listView->setItemDelegate(m_delegate);
-    m_listView->setSelectionMode(QAbstractItemView::NoSelection);
+    m_listView->setSelectionMode(QAbstractItemView::MultiSelection);
     m_listView->setFocusPolicy(Qt::NoFocus);
     m_listView->setMouseTracking(true);
     m_listView->setStyleSheet(
@@ -240,23 +240,28 @@ void TaskManager::addTask()
 
 void TaskManager::deleteSelectedTasks()
 {
-    // Проверяем наличие выбранных и активных задач
-    bool hasSelected = false;
+    // Получаем выбранные индексы из представления
+    const auto selectedIndexes = m_listView->selectionModel()->selectedIndexes();
+
+    if (selectedIndexes.isEmpty())
+        return;
+
+    // Проверяем наличие активных задач среди выбранных
+    QList<int> sourceRows;
     bool hasActive = false;
 
-    for (int i = 0; i < m_model->rowCount(); ++i)
+    for (const auto &proxyIndex : selectedIndexes)
     {
-        auto *task = m_model->getTask(i);
-        if (task && task->isSelected())
+        const QModelIndex sourceIndex = m_proxyModel->mapToSource(proxyIndex);
+        sourceRows.append(sourceIndex.row());
+
+        if (!hasActive)
         {
-            hasSelected = true;
-            if (task->isRunning())
+            Task *task = m_model->getTask(sourceIndex.row());
+            if (task && task->isRunning())
                 hasActive = true;
         }
     }
-
-    if (!hasSelected)
-        return;
 
     // Запрашиваем подтверждение для активных задач
     if (hasActive)
@@ -272,7 +277,12 @@ void TaskManager::deleteSelectedTasks()
             return;
     }
 
-    m_model->removeSelectedTasks();
+    // Удаляем задачи (начиная с конца, чтобы не сбивать индексы)
+    std::sort(sourceRows.begin(), sourceRows.end(), std::greater<int>());
+    for (int row : sourceRows)
+    {
+        m_model->removeTask(row);
+    }
 }
 
 void TaskManager::onFilterChanged(int index)
